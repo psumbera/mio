@@ -94,14 +94,15 @@ jobs:
     - uses: dtolnay/rust-toolchain@nightly
     - name: Tests
       run: cargo test --all-features
-  test-solaris:
-    name: test on solaris
+  Solaris:
+    name: Solaris
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: test on Solaris
         uses: vmactions/solaris-vm@v1
         with:
+          release: "11.4-gcc"
           usesh: true
           mem: 4096
           copyback: false
