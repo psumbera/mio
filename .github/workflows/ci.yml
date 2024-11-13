@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: [ "master", "v0.7.x", "v0.8.x" ]
+    branches: [ "master", "v0.7.x", "v0.8.x", "solaris-ci" ]
   pull_request:
     branches: [ "master", "v0.7.x", "v0.8.x" ]
 env:
@@ -94,6 +94,26 @@ jobs:
     - uses: dtolnay/rust-toolchain@nightly
     - name: Tests
       run: cargo test --all-features
+  test-solaris:
+    name: test on solaris
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: test on Solaris
+        uses: vmactions/solaris-vm@v1
+        with:
+          usesh: true
+          mem: 4096
+          copyback: false
+          prepare: |
+            source <(curl -s https://raw.githubusercontent.com/psumbera/solaris-rust/refs/heads/main/sh.rust-web-install)
+            echo "~~~~ rustc --version ~~~~"
+            rustc --version
+            echo "~~~~ Solaris-version ~~~~"
+            uname -a
+          run: |
+            export PATH=$HOME/.rust_solaris/bin:$PATH
+            cargo test --all-features
   Clippy:
     runs-on: ubuntu-latest
     timeout-minutes: 10
